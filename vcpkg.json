@@ -1,0 +1,8 @@
+{
+  "name": "jarvis",
+  "version": "0.1.0",
+  "dependencies": [
+    "nlohmann-json"
+  ],
+  "builtin-baseline": "15b12b99a227d51e21c86dffd40385439eac87a0"
+}
