@@ -13,4 +13,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_subdirectory(core)
 add_subdirectory(apps/cli)
 
+option(JARVIS_BUILD_TESTS "Compilar os testes automatizados" ON)
 
+if(JARVIS_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

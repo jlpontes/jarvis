@@ -23,6 +23,11 @@ bool ModuleRegistry::add(std::unique_ptr<IModule> module) {
 bool ModuleRegistry::has(const std::string& name) const {
     return modules_.contains(name);
 }
+void ModuleRegistry::init_all(Database& db) {
+    for (auto& [name, module] : modules_) {
+        module->init(db);
+    }
+}
 
 Response ModuleRegistry::dispatch(const Command& cmd) {
     auto it = modules_.find(cmd.module);

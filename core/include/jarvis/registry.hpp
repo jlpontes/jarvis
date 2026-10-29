@@ -19,6 +19,9 @@ public:
     // Existe um módulo com este nome?
     bool has(const std::string& name) const;
 
+    // Chama init(db) em todos os módulos registrados
+    void init_all(Database& db);
+
     // Entrega o comando ao módulo dono dele
     Response dispatch(const Command& cmd);
 

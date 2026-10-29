@@ -1,4 +1,7 @@
+#include <cstdlib>
 #include <ctime>
+#include <exception>
+#include <filesystem>
 #include <iomanip>
 #include <iostream>
 #include <memory>
@@ -7,6 +10,7 @@
 #include <vector>
 
 #include "jarvis/command.hpp"
+#include "jarvis/database.hpp"
 #include "jarvis/module.hpp"
 #include "jarvis/registry.hpp"
 
@@ -77,13 +81,32 @@ void print_help(const jarvis::ModuleRegistry& registry) {
     }
 }
 
-int main(int argc, char* argv[]) {
-    // 1. Registrar os módulos (uma vez só)
+// ---------- Onde o Jarvis guarda seus dados: ~/.jarvis ----------
+std::filesystem::path data_dir() {
+    const char* home = std::getenv("HOME");
+
+    std::filesystem::path base = (home != nullptr)
+        ? std::filesystem::path(home)
+        : std::filesystem::current_path();
+
+    std::filesystem::path dir = base / ".jarvis";
+    std::filesystem::create_directories(dir);
+    return dir;
+}
+
+// ---------- O programa de verdade ----------
+int run(int argc, char* argv[]) {
+    // 1. Abrir o banco ANTES do registry (a ordem importa!)
+    std::filesystem::path db_path = data_dir() / "jarvis.db";
+    jarvis::Database db(db_path.string());
+
+    // 2. Registrar e inicializar os módulos
     jarvis::ModuleRegistry registry;
     registry.add(std::make_unique<PingModule>());
     registry.add(std::make_unique<ClockModule>());
+    registry.init_all(db);
 
-    // 2. "jarvis help" ou comando incompleto → mostrar ajuda
+    // 3. "jarvis help" ou comando incompleto → mostrar ajuda
     if (argc == 2 && std::string(argv[1]) == "help") {
         print_help(registry);
         return 0;
@@ -93,7 +116,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // 3. Transformar o que foi digitado em Command
+    // 4. Transformar o que foi digitado em Command
     jarvis::Command cmd;
     cmd.module = argv[1];
     cmd.action = argv[2];
@@ -101,7 +124,7 @@ int main(int argc, char* argv[]) {
         cmd.args["texto"] = argv[3];
     }
 
-    // 4. O registry decide quem atende
+    // 5. O registry decide quem atende
     jarvis::Response resp = registry.dispatch(cmd);
 
     if (resp.ok) {
@@ -111,4 +134,13 @@ int main(int argc, char* argv[]) {
 
     std::cerr << "Erro: " << resp.message << "\n";
     return 1;
+}
+
+int main(int argc, char* argv[]) {
+    try {
+        return run(argc, argv);
+    } catch (const std::exception& e) {
+        std::cerr << "Erro fatal: " << e.what() << "\n";
+        return 1;
+    }
 }
