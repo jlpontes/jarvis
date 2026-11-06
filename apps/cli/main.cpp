@@ -1,72 +1,18 @@
 #include <cstdlib>
-#include <ctime>
 #include <exception>
 #include <filesystem>
-#include <iomanip>
 #include <iostream>
 #include <memory>
-#include <sstream>
 #include <string>
-#include <vector>
 
 #include "jarvis/command.hpp"
 #include "jarvis/database.hpp"
 #include "jarvis/module.hpp"
 #include "jarvis/registry.hpp"
+
+#include "jarvis/clock/clock_module.hpp"
+#include "jarvis/ping/ping_module.hpp"
 #include "jarvis/tasks/tasks_module.hpp"
-
-// ---------- Módulo 1: ping (teste) ----------
-class PingModule : public jarvis::IModule {
-public:
-    std::string name() const override {
-        return "ping";
-    }
-
-    std::vector<jarvis::ActionInfo> actions() const override {
-        return {
-            {"ping", "Responde pong"},
-            {"echo", "Repete o texto recebido"},
-        };
-    }
-
-    jarvis::Response handle(const jarvis::Command& cmd) override {
-        if (cmd.action == "ping") {
-            return jarvis::Response::success("pong");
-        }
-        if (cmd.action == "echo") {
-            std::string texto = cmd.args.value("texto", std::string{});
-            return jarvis::Response::success(texto);
-        }
-        return jarvis::Response::error("Ação desconhecida: " + cmd.action);
-    }
-};
-
-// ---------- Módulo 2: relógio ----------
-class ClockModule : public jarvis::IModule {
-public:
-    std::string name() const override {
-        return "relogio";
-    }
-
-    std::vector<jarvis::ActionInfo> actions() const override {
-        return {
-            {"agora", "Mostra a data e a hora atuais"},
-        };
-    }
-
-    jarvis::Response handle(const jarvis::Command& cmd) override {
-        if (cmd.action == "agora") {
-            std::time_t agora = std::time(nullptr);
-            std::tm local = *std::localtime(&agora);
-
-            std::ostringstream texto;
-            texto << "Agora são " << std::put_time(&local, "%H:%M de %d/%m/%Y");
-
-            return jarvis::Response::success(texto.str());
-        }
-        return jarvis::Response::error("Ação desconhecida: " + cmd.action);
-    }
-};
 
 // ---------- Help gerado a partir do registry ----------
 void print_help(const jarvis::ModuleRegistry& registry) {
@@ -103,8 +49,8 @@ int run(int argc, char* argv[]) {
 
     // 2. Registrar e inicializar os módulos
     jarvis::ModuleRegistry registry;
-    registry.add(std::make_unique<PingModule>());
-    registry.add(std::make_unique<ClockModule>());
+    registry.add(std::make_unique<jarvis::ping::PingModule>());
+    registry.add(std::make_unique<jarvis::clock::ClockModule>());
     registry.add(std::make_unique<jarvis::tasks::TasksModule>());
     registry.init_all(db);
 
