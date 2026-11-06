@@ -1,3 +1,8 @@
 build/
 vcpkg_installed/
 .DS_Store
+
+# Arquivos locais do Claude (não vão para o repositório)
+CLAUDE.md
+docs/
+.claude/

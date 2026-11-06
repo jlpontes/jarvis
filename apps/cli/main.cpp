@@ -13,6 +13,7 @@
 #include "jarvis/database.hpp"
 #include "jarvis/module.hpp"
 #include "jarvis/registry.hpp"
+#include "jarvis/tasks/tasks_module.hpp"
 
 // ---------- Módulo 1: ping (teste) ----------
 class PingModule : public jarvis::IModule {
@@ -69,7 +70,7 @@ public:
 
 // ---------- Help gerado a partir do registry ----------
 void print_help(const jarvis::ModuleRegistry& registry) {
-    std::cout << "Uso: jarvis <modulo> <acao> [texto]\n";
+    std::cout << "Uso: jarvis <modulo> <acao> [texto...]\n";
     std::cout << "\nMódulos disponíveis:\n";
 
     for (const jarvis::IModule* module : registry.list()) {
@@ -104,6 +105,7 @@ int run(int argc, char* argv[]) {
     jarvis::ModuleRegistry registry;
     registry.add(std::make_unique<PingModule>());
     registry.add(std::make_unique<ClockModule>());
+    registry.add(std::make_unique<jarvis::tasks::TasksModule>());
     registry.init_all(db);
 
     // 3. "jarvis help" ou comando incompleto → mostrar ajuda
@@ -121,7 +123,13 @@ int run(int argc, char* argv[]) {
     cmd.module = argv[1];
     cmd.action = argv[2];
     if (argc >= 4) {
-        cmd.args["texto"] = argv[3];
+        // Junta todas as palavras depois da ação: "add Comprar pão" -> "Comprar pão"
+        std::string texto = argv[3];
+        for (int i = 4; i < argc; ++i) {
+            texto += " ";
+            texto += argv[i];
+        }
+        cmd.args["texto"] = texto;
     }
 
     // 5. O registry decide quem atende
