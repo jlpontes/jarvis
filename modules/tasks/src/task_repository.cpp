@@ -39,9 +39,8 @@ Task TaskRepository::add(const std::string& title) {
 }
 
 std::vector<Task> TaskRepository::list(bool include_done) const {
-    const std::string sql = std::string(kSelectColumns)
-        + (include_done ? "" : " WHERE done = 0")
-        + " ORDER BY done, id";
+    const std::string sql = std::string(kSelectColumns) + (include_done ? "" : " WHERE done = 0") +
+                            " ORDER BY done, id";
 
     SQLite::Statement query(db_.raw(), sql);
 
@@ -64,8 +63,8 @@ std::optional<Task> TaskRepository::find(std::int64_t id) const {
 
 bool TaskRepository::mark_done(std::int64_t id) {
     SQLite::Statement update(db_.raw(),
-        "UPDATE tasks SET done = 1, done_at = datetime('now', 'localtime') "
-        "WHERE id = ? AND done = 0");
+                             "UPDATE tasks SET done = 1, done_at = datetime('now', 'localtime') "
+                             "WHERE id = ? AND done = 0");
     update.bind(1, id);
     return update.exec() > 0;  // exec() devolve quantas linhas mudaram
 }

@@ -10,3 +10,5 @@ target_include_directories(jarvis_clock
 target_link_libraries(jarvis_clock
     PUBLIC jarvis::core
 )
+
+jarvis_set_warnings(jarvis_clock)

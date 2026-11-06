@@ -32,9 +32,8 @@ void print_help(const jarvis::ModuleRegistry& registry) {
 std::filesystem::path data_dir() {
     const char* home = std::getenv("HOME");
 
-    std::filesystem::path base = (home != nullptr)
-        ? std::filesystem::path(home)
-        : std::filesystem::current_path();
+    std::filesystem::path base =
+        (home != nullptr) ? std::filesystem::path(home) : std::filesystem::current_path();
 
     std::filesystem::path dir = base / ".jarvis";
     std::filesystem::create_directories(dir);

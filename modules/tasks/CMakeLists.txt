@@ -12,3 +12,5 @@ target_include_directories(jarvis_tasks
 target_link_libraries(jarvis_tasks
     PUBLIC jarvis::core
 )
+
+jarvis_set_warnings(jarvis_tasks)

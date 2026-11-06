@@ -1,8 +1,8 @@
 #include <memory>
 #include <string>
 
-#include <catch2/catch_test_macros.hpp>
 #include <SQLiteCpp/Statement.h>
+#include <catch2/catch_test_macros.hpp>
 
 #include "jarvis/database.hpp"
 #include "jarvis/tasks/tasks_module.hpp"
@@ -21,7 +21,7 @@ jarvis::Command make_cmd(std::string action, std::string texto = {}) {
 
 bool table_exists(jarvis::Database& db, const std::string& table) {
     SQLite::Statement query(db.raw(),
-        "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = ?");
+                            "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = ?");
     query.bind(1, table);
     query.executeStep();
     return query.getColumn(0).getInt() == 1;

@@ -20,3 +20,5 @@ target_link_libraries(jarvis_tests
 
 include(Catch)
 catch_discover_tests(jarvis_tests)
+
+jarvis_set_warnings(jarvis_tests)

@@ -7,3 +7,5 @@ target_link_libraries(jarvis
         jarvis::ping
         jarvis::tasks
 )
+
+jarvis_set_warnings(jarvis)

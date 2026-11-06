@@ -24,8 +24,8 @@ void Database::execute(const std::string& sql) {
 }
 
 int Database::schema_version(const std::string& module) const {
-    SQLite::Statement query(db_,
-        "SELECT COALESCE(MAX(version), 0) FROM schema_migrations WHERE module = ?");
+    SQLite::Statement query(
+        db_, "SELECT COALESCE(MAX(version), 0) FROM schema_migrations WHERE module = ?");
     query.bind(1, module);
     query.executeStep();
     return query.getColumn(0).getInt();
@@ -40,8 +40,7 @@ bool Database::migrate(const std::string& module, int version, const std::string
 
     db_.exec(sql);
 
-    SQLite::Statement insert(db_,
-        "INSERT INTO schema_migrations (module, version) VALUES (?, ?)");
+    SQLite::Statement insert(db_, "INSERT INTO schema_migrations (module, version) VALUES (?, ?)");
     insert.bind(1, module);
     insert.bind(2, version);
     insert.exec();

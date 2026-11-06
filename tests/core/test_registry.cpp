@@ -3,9 +3,11 @@
 #include <string>
 #include <utility>
 #include <vector>
+
 #include <catch2/catch_test_macros.hpp>
-#include "jarvis/registry.hpp"
+
 #include "jarvis/database.hpp"
+#include "jarvis/registry.hpp"
 
 namespace {
 

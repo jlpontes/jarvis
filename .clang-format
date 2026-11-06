@@ -1,0 +1,24 @@
+# Estilo do Jarvis: LLVM como base, ajustado ao jeito que o código já era escrito.
+# Formatar tudo:  git ls-files '*.hpp' '*.cpp' | xargs clang-format -i
+---
+Language: Cpp
+BasedOnStyle: LLVM
+Standard: c++20
+
+IndentWidth: 4
+ColumnLimit: 100
+
+# public:/private: na coluna da classe (LLVM usaria 2 espaços)
+AccessModifierOffset: -4
+
+# char* argv (o tipo fica junto do *), em vez de char *argv
+PointerAlignment: Left
+
+# Corpo de função sempre em várias linhas; só {} vazio pode ficar numa linha
+AllowShortFunctionsOnASingleLine: Empty
+
+# "}  // namespace jarvis" com dois espaços antes do comentário
+SpacesBeforeTrailingComments: 2
+
+InsertNewlineAtEOF: true
+...

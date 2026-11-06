@@ -59,7 +59,8 @@ jarvis::Response not_found(std::int64_t id) {
 }  // namespace
 
 TasksModule::TasksModule() = default;
-TasksModule::~TasksModule() = default;  // aqui TaskRepository é completo: o unique_ptr sabe destruí-lo
+// Aqui TaskRepository é completo: o unique_ptr sabe destruí-lo
+TasksModule::~TasksModule() = default;
 
 std::string TasksModule::name() const {
     return "tarefas";
@@ -120,8 +121,7 @@ jarvis::Response TasksModule::list(const std::string& text) {
     const std::vector<Task> tasks = repo_->list(include_done);
     if (tasks.empty()) {
         return jarvis::Response::success(
-            include_done ? "Nenhuma tarefa." : "Nenhuma tarefa pendente.",
-            nlohmann::json::array());
+            include_done ? "Nenhuma tarefa." : "Nenhuma tarefa pendente.", nlohmann::json::array());
     }
 
     std::string message;

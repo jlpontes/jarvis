@@ -18,3 +18,5 @@ target_link_libraries(jarvis_core
 )
 
 target_compile_features(jarvis_core PUBLIC cxx_std_20)
+
+jarvis_set_warnings(jarvis_core)

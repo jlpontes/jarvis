@@ -1,7 +1,7 @@
 #include <string>
 
-#include <catch2/catch_test_macros.hpp>
 #include <SQLiteCpp/Statement.h>
+#include <catch2/catch_test_macros.hpp>
 
 #include "jarvis/database.hpp"
 
@@ -17,7 +17,7 @@ int count_rows(jarvis::Database& db, const std::string& table) {
 // A tabela existe no banco?
 bool table_exists(jarvis::Database& db, const std::string& table) {
     SQLite::Statement query(db.raw(),
-        "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = ?");
+                            "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = ?");
     query.bind(1, table);
     query.executeStep();
     return query.getColumn(0).getInt() == 1;
@@ -35,8 +35,8 @@ TEST_CASE("Banco novo começa sem nenhuma migration", "[database]") {
 TEST_CASE("migrate aplica o SQL e registra a versão", "[database]") {
     jarvis::Database db(":memory:");
 
-    bool aplicou = db.migrate("teste", 1,
-        "CREATE TABLE itens (id INTEGER PRIMARY KEY, nome TEXT NOT NULL)");
+    bool aplicou =
+        db.migrate("teste", 1, "CREATE TABLE itens (id INTEGER PRIMARY KEY, nome TEXT NOT NULL)");
 
     REQUIRE(aplicou);
     REQUIRE(db.schema_version("teste") == 1);
@@ -81,8 +81,8 @@ TEST_CASE("Migration com erro é desfeita por inteiro", "[database]") {
     jarvis::Database db(":memory:");
 
     // O segundo CREATE falha (tabela repetida), então o primeiro também é desfeito
-    REQUIRE_THROWS(db.migrate("teste", 1,
-        "CREATE TABLE a (id INTEGER); CREATE TABLE a (id INTEGER);"));
+    REQUIRE_THROWS(
+        db.migrate("teste", 1, "CREATE TABLE a (id INTEGER); CREATE TABLE a (id INTEGER);"));
 
     REQUIRE(db.schema_version("teste") == 0);
     REQUIRE_FALSE(table_exists(db, "a"));
